@@ -1,0 +1,459 @@
+  
+ 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Revolution of Computers: Interactive Journey Through Generations</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            overflow-x: hidden;
+            cursor: none; /* Hide default cursor for custom one */
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Custom Mouse Cursor */
+        .cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #00ff88 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s ease;
+            mix-blend-mode: difference;
+        }
+        .cursor.interactive {
+            transform: scale(1.5);
+            box-shadow: 0 0 20px #00ff88;
+        }
+
+        /* Hero Section with Mouse Parallax */
+        .hero {
+            height: 100vh;
+            background: url('https://images.unsplash.com/photo-1517336714731-489689fd1ca8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') no-repeat center/cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            perspective: 1000px;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+            transition: transform 0.1s ease; /* For parallax */
+        }
+        .hero-content {
+            z-index: 2;
+            transform: translateZ(50px) rotateX(5deg);
+            animation: heroSlideIn 2s ease-out;
+            transition: transform 0.1s ease;
+        }
+        @keyframes heroSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) translateZ(0) rotateX(0);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) translateZ(50px) rotateX(5deg);
+            }
+        }
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+        }
+        .parallax-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(0,255,136,0.1) 0%, transparent 50%);
+            pointer-events: none;
+            transition: transform 0.1s ease;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: background 0.3s;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+        }
+        nav li {
+            margin: 0 20px;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            transition: color 0.3s;
+            cursor: none; /* Use custom cursor */
+        }
+        nav a:hover {
+            color: #00ff88;
+        }
+
+        /* Main Content Sections */
+        .section {
+            padding: 80px 0;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .section h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            color: #00ff88;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        /* Enhanced 3D Cards with Mouse Tilt and Dynamic Content */
+        .generation {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            height: 450px; /* Increased for dynamic content */
+            position: relative;
+            overflow: hidden;
+            cursor: none;
+        }
+        .card:hover {
+            transform: rotateY(10deg) rotateX(5deg) scale(1.05);
+        }
+        /* Tilt Transform Base */
+        .card.tilted {
+            transition: transform 0.1s ease;
+        }
+        .card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+        .card p {
+            color: #ddd;
+            margin-bottom: 20px;
+            flex-grow: 1;
+            transition: opacity 0.3s ease;
+        }
+        /* Hidden Dynamic Content */
+        .dynamic-info {
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: opacity 0.5s ease, max-height 0.5s ease;
+            color: #bbb;
+            margin-top: 10px;
+        }
+        .card.active .dynamic-info {
+            opacity: 1;
+            max-height: 200px;
+        }
+        .card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            transition: transform 0.5s;
+            transform-style: preserve-3d;
+            position: relative;
+        }
+        .card img.alternate {
+            content: url('https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'); /* Example alternate; customize per card */
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: opacity 0.3s ease;
+        }
+        .card.active img.alternate {
+            opacity: 1;
+        }
+        .card img.main {
+            opacity: 1;
+            z-index: 2;
+        }
+        .card.active img.main {
+            opacity: 0;
+        }
+        .card:hover img {
+            transform: rotateY(180deg) scale(1.1);
+        }
+        .card ul {
+            list-style: disc;
+            padding-left: 20px;
+            color: #bbb;
+            transition: color 0.3s ease;
+        }
+        .card li {
+            margin-bottom: 5px;
+            transition: color 0.3s ease;
+        }
+        .card.active ul li {
+            color: #00ff88;
+        }
+        .image-caption {
+            font-size: 0.9rem;
+            color: #888;
+            text-align: center;
+            transition: color 0.3s ease;
+        }
+        .card.active .image-caption {
+            color: #00ff88;
+            content: "Alternate View: Enhanced Details Revealed";
+        }
+
+        /* Timeline with Mouse-Activated Changes */
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 2px;
+            background: linear-gradient(to bottom, #00ff88, #16213e);
+            transform: translateX(-50%);
+            animation: timelineGlow 3s infinite alternate;
+        }
+        @keyframes timelineGlow {
+            from { box-shadow: 0 0 10px #00ff88; }
+            to { box-shadow: 0 0 20px #00ff88; }
+        }
+        .timeline-item {
+            margin-bottom: 50px;
+            position: relative;
+            animation: slideInLeft 1s ease-out;
+            cursor: none;
+        }
+        .timeline-item:nth-child(even) {
+            text-align: right;
+            animation: slideInRight 1s ease-out;
+        }
+        @keyframes slideInLeft {
+            from { transform: translateX(-100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideInRight {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .timeline-content {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+            max-width: 45%;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            transition: transform 0.1s ease, background 0.3s ease;
+        }
+        .timeline-item.active .timeline-content {
+            transform: scale(1.05) translateZ(20px);
+            background: rgba(0, 255, 136, 0.2);
+        }
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            width: 20px;
+            height: 20px;
+            background: #00ff88;
+            border-radius: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .timeline-item.active::after {
+            transform: translateX(-50%) scale(1.5) rotate(180deg);
+            box-shadow: 0 0 15px #00ff88;
+        }
+        .timeline-extra {
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: opacity 0.5s ease, max-height 0.5s ease;
+            margin-top: 10px;
+            color: #00ff88;
+        }
+        .timeline-item.active .timeline-extra {
+            opacity: 1;
+            max-height: 100px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .generation { grid-template-columns: 1fr; }
+            .timeline::before { left: 20px; }
+            .timeline-content { max-width: 80%; margin-left: 50px; }
+            .timeline-item:nth-child(even) { text-align: left; }
+            .timeline-item::after { left: 15px; }
+            .cursor { display: none; } /* Hide custom cursor on mobile */
+            body { cursor: auto; }
+        }
+
+        /* Scroll Reveal for Sections */
+        .observe {
+            /* JS will handle visibility */
+        }
+    </style>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="cursor"></div>
+
+    <nav>
+        <ul>
+            <li><a href="#intro">Introduction</a></li>
+            <li><a href="#gen1">First Generation</a></li>
+            <li><a href="#gen2">Second Generation</a></li>
+            <li><a href="#gen3">Third Generation</a></li>
+            <li><a href="#gen4">Fourth Generation</a></li>
+            <li><a href="#gen5">Fifth Generation</a></li>
+            <li><a href="#future">Future</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero" id="intro">
+        <div class="parallax-layer"></div>
+        <div class="hero-content">
+            <h1>The Revolution of Computers</h1>
+            <p>Move your mouse to explore! From massive vacuum-tube machines to pocket-sized AI powerhouses, the evolution of computers has transformed society. Generations unfold with interactive depth.</p>
+        </div>
+    </section>
+
+    <div class="container">
+        <!-- First Generation -->
+        <section class="section observe" id="gen1">
+            <h2>First Generation (1940s-1950s): The Dawn of Computing</h2>
+            <div class="generation">
+                <div class="card" data-tilt>
+                    <h3>Vacuum Tubes Era</h3>
+                    <img class="main" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/ENIAC_Penn1.jpg/800px-ENIAC_Penn1.jpg" alt="ENIAC Computer">
+                    <img class="alternate" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/ENIAC_On.jpg/800px-ENIAC_On.jpg" alt="ENIAC In Action">
+                    <div class="image-caption">Classic ENIAC View</div>
+                    <p>The first generation relied on vacuum tubes, birthing electronic computing. Machines like ENIAC (1945) weighed 30 tons, used 18,000 tubes, and calculated WWII ballistics for the U.S. military.</p>
+                    <ul>
+                        <li><strong>Innovations:</strong> Binary code and von Neumann architecture.</li>
+                        <li><strong>Impacts:</strong> Scientific calculations revolutionized.</li>
+                        <li><strong>Challenges:</strong> High heat and frequent failures.</li>
+                    </ul>
+                    <div class="dynamic-info">
+                        <p><strong>Extra Fact:</strong> ENIAC cost $487,000 (about $7M today) and filled a 50x30 ft room. Mouse movement reveals: It performed 5,000 additions per second—slow by today's standards but groundbreaking.</p>
+                        <ul>
+                            <li>Power Consumption: 150 kW (enough for 100 homes).</li>
+                            <li>Programming: Wired panels, no software.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card" data-tilt>
+                    <h3>Historical Context</h3>
+                    <img class="main" src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb- 
